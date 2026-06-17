@@ -6,8 +6,8 @@
     <title>小管家 - AI 语音助手</title>
     <style>
         /* ============================================
-               主题: 深空蓝 + 霓虹光效
-               ============================================ */
+           主题: 深空蓝 + 霓虹光效
+           ============================================ */
         :root {
             --bg-primary: #0a0e27;
             --bg-secondary: #131838;
@@ -17,6 +17,7 @@
             --accent: #00d4ff;
             --accent-glow: rgba(0, 212, 255, 0.3);
             --success: #00e676;
+            --warning: #ffc107;
             --error: #ff5252;
             --gradient: linear-gradient(135deg, #00d4ff, #7b2ff7);
         }
@@ -24,7 +25,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans SC', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -42,7 +43,7 @@
         /* --- 头部 --- */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .logo {
@@ -60,7 +61,7 @@
 
         .header p {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 4px;
         }
 
@@ -69,66 +70,63 @@
             background: var(--bg-card);
             border-radius: 16px;
             padding: 16px;
-            height: 320px;
+            height: 340px;
             overflow-y: auto;
             margin-bottom: 16px;
             border: 1px solid rgba(255,255,255,0.05);
             scroll-behavior: smooth;
         }
 
-        .chat-box::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-box::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 2px;
-        }
+        .chat-box::-webkit-scrollbar { width: 4px; }
+        .chat-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-        .message {
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-        }
+        .message { margin-bottom: 12px; display: flex; flex-direction: column; }
 
         .message .bubble {
             max-width: 85%;
             padding: 10px 14px;
             border-radius: 14px;
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.55;
             word-break: break-word;
         }
 
-        .message.user {
-            align-items: flex-end;
-        }
+        .message.user { align-items: flex-end; }
         .message.user .bubble {
             background: linear-gradient(135deg, #0f3460, #1a1a5e);
             border-bottom-right-radius: 4px;
         }
 
-        .message.ai {
-            align-items: flex-start;
-        }
+        .message.ai { align-items: flex-start; }
         .message.ai .bubble {
             background: rgba(0, 212, 255, 0.08);
             border: 1px solid rgba(0, 212, 255, 0.15);
             border-bottom-left-radius: 4px;
         }
 
+        .message.system { align-items: center; }
+        .message.system .bubble {
+            background: rgba(255, 193, 7, 0.08);
+            border: 1px solid rgba(255, 193, 7, 0.15);
+            color: var(--warning);
+            font-size: 13px;
+            text-align: center;
+            max-width: 100%;
+        }
+
         .message .time {
             font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 3px;
             padding: 0 4px;
         }
 
-        /* --- 录音按钮 (大圆环) --- */
+        /* --- 麦克风按钮 --- */
         .record-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .record-btn {
@@ -143,10 +141,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .record-btn .icon {
-            font-size: 32px;
+            font-size: 34px;
             transition: all 0.3s ease;
         }
 
@@ -167,10 +167,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
         }
 
-        .record-btn.recording .icon {
-            color: var(--error);
-        }
-
         .record-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -182,17 +178,15 @@
             font-size: 13px;
         }
 
-        .record-hint .highlight {
-            color: var(--accent);
-        }
+        .record-hint .highlight { color: var(--accent); }
 
-        /* --- 状态指示器 --- */
+        /* --- 状态栏 --- */
         .status-bar {
             display: flex;
             align-items: center;
             gap: 8px;
             justify-content: center;
-            margin: 12px 0;
+            margin: 10px 0;
             font-size: 14px;
             color: var(--text-secondary);
             min-height: 24px;
@@ -203,28 +197,19 @@
             height: 8px;
             border-radius: 50%;
             background: var(--text-secondary);
+            flex-shrink: 0;
         }
-
-        .status-bar .dot.active {
-            background: var(--success);
-            box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
-        }
-
-        .status-bar .dot.error {
-            background: var(--error);
-        }
-
-        .status-bar .dot.thinking {
-            background: var(--accent);
-            animation: blink 0.8s infinite;
-        }
+        .status-bar .dot.active { background: var(--success); box-shadow: 0 0 8px rgba(0,230,118,0.5); }
+        .status-bar .dot.error { background: var(--error); }
+        .status-bar .dot.thinking { background: var(--accent); animation: blink 0.8s infinite; }
+        .status-bar .dot.speaking { background: var(--warning); animation: blink 0.5s infinite; }
 
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
-        /* --- 音箱信息 --- */
+        /* --- 文本提示 --- */
         .speaker-info {
             display: flex;
             align-items: center;
@@ -232,11 +217,10 @@
             justify-content: center;
             font-size: 12px;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 2px;
+            min-height: 20px;
         }
-        .speaker-info .connected {
-            color: var(--success);
-        }
+        .speaker-info .connected { color: var(--success); }
 
         /* --- 文字输入切换 --- */
         .text-toggle {
@@ -248,18 +232,14 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
-        .text-toggle:hover {
-            color: var(--accent);
-        }
+        .text-toggle:hover { color: var(--accent); }
 
         .text-input-area {
             display: none;
             width: 100%;
             gap: 8px;
         }
-        .text-input-area.show {
-            display: flex;
-        }
+        .text-input-area.show { display: flex; }
 
         .text-input-area input {
             flex: 1;
@@ -271,9 +251,7 @@
             font-size: 15px;
             outline: none;
         }
-        .text-input-area input:focus {
-            border-color: var(--accent);
-        }
+        .text-input-area input:focus { border-color: var(--accent); }
 
         .text-input-area button {
             padding: 10px 18px;
@@ -283,10 +261,9 @@
             color: #fff;
             font-weight: bold;
             cursor: pointer;
+            white-space: nowrap;
         }
-        .text-input-area button:disabled {
-            opacity: 0.5;
-        }
+        .text-input-area button:disabled { opacity: 0.5; }
     </style>
 </head>
 <body>
@@ -295,13 +272,13 @@
         <div class="header">
             <div class="logo">🎙️</div>
             <h1>小管家 AI 助手</h1>
-            <p>对着手机说话，小爱音箱回答</p>
+            <p id="subtitle">按住说话，小爱音箱回答</p>
         </div>
 
         <!-- 对话区 -->
         <div class="chat-box" id="chatBox">
             <div class="message ai">
-                <div class="bubble">你好！我是小管家，按住按钮说话，我让小爱音箱回答你 🎵</div>
+                <div class="bubble">你好！我是小管家，按住 🎤 按钮说话，或者点下方「改用文字输入」和我聊天 😊</div>
                 <div class="time">现在</div>
             </div>
         </div>
@@ -313,266 +290,314 @@
         </div>
 
         <!-- 音箱连接状态 -->
-        <div class="speaker-info" id="speakerInfo">
-            🔊 音箱: <span id="speakerName">正在检测...</span>
-        </div>
+        <div class="speaker-info" id="speakerInfo">🔊 音箱: <span id="speakerName">检测中...</span></div>
 
         <!-- 录音区 -->
         <div class="record-area">
-            <button class="record-btn" id="recordBtn" onclick="toggleRecord()">
+            <button class="record-btn" id="recordBtn">
                 <span class="icon">🎤</span>
             </button>
-            <span class="record-hint">
-                <span class="highlight">按住</span> 说话，松手发送
+            <span class="record-hint" id="recordHint">
+                <span class="highlight">点击</span> 开始说话，再点停止
             </span>
         </div>
 
         <!-- 文字输入切换 -->
         <div style="display:flex;justify-content:center;margin-top:14px;">
-            <button class="text-toggle" id="toggleText" onclick="toggleTextInput()">
-                ✏️ 改用文字输入
-            </button>
+            <button class="text-toggle" id="toggleText">✏️ 改用文字输入</button>
         </div>
 
         <!-- 文字输入区 -->
         <div class="text-input-area" id="textInputArea">
-            <input id="textInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter') sendText()" />
-            <button id="sendBtn" onclick="sendText()">发送</button>
+            <input id="textInput" placeholder="输入消息..." />
+            <button id="sendBtn" disabled>发送</button>
         </div>
     </div>
 
     <script>
         // ============================================
-        // 状态变量
+        // Web Speech API 语音识别 (浏览器内置，不需要服务器音频处理)
         // ============================================
-        let ws = null;
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let isRecording = false;
+
+        // 状态变量
+        let isListening = false;
         let isProcessing = false;
+        let recognition = null;
         let useTextMode = false;
+        let speakerNameEl = document.getElementById('speakerName');
 
         const recordBtn = document.getElementById('recordBtn');
+        const recordHint = document.getElementById('recordHint');
         const statusText = document.getElementById('statusText');
         const statusDot = document.getElementById('statusDot');
         const chatBox = document.getElementById('chatBox');
-        const speakerName = document.getElementById('speakerName');
+        const textInput = document.getElementById('textInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const toggleBtn = document.getElementById('toggleText');
+        const textArea = document.getElementById('textInputArea');
 
         // ============================================
         // 初始化
         // ============================================
         async function init() {
-            // 获取状态
+            // 获取音箱状态
             try {
                 const res = await fetch('/api/status');
                 const data = await res.json();
-                speakerName.textContent = data.speaker || '未连接';
-            } catch(e) {
-                speakerName.textContent = '无法连接服务器';
+                speakerNameEl.textContent = data.speaker || '未连接';
+            } catch (e) {
+                speakerNameEl.textContent = '无法连接服务器';
             }
 
-            // 连接 WebSocket
-            connectWS();
+            // 检测浏览器是否支持语音识别
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                setupRecognition();
+                recordBtn.disabled = false;
+            } else {
+                setStatus('❌ 浏览器不支持语音识别', 'error');
+                recordBtn.disabled = true;
+                document.querySelector('.record-area').style.display = 'none';
+                toggleTextInput(); // 自动切到文字模式
+            }
+
+            // 输入框 Enter 发送
+            textInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !sendBtn.disabled) sendText();
+            });
+
+            // 输入框内容变化控制发送按钮
+            textInput.addEventListener('input', function() {
+                sendBtn.disabled = !this.value.trim();
+            });
+
+            // 事件绑定
+            toggleBtn.addEventListener('click', toggleTextInput);
+            sendBtn.addEventListener('click', sendText);
+            recordBtn.addEventListener('click', toggleRecord);
+            recordBtn.addEventListener('touchstart', function(e) {
+                // 防止 iOS 双击缩放
+                e.preventDefault();
+            }, { passive: true });
         }
 
-        function connectWS() {
-            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${location.host}/ws/voice`);
+        // ============================================
+        // Web Speech API 设置
+        // ============================================
+        function setupRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
 
-            ws.onopen = () => {
-                setStatus('就绪', 'active');
-                recordBtn.disabled = false;
+            // 配置
+            recognition.lang = 'zh-CN';
+            recognition.continuous = false;     // 单次识别
+            recognition.interimResults = true;  // 中间结果
+            recognition.maxAlternatives = 1;
+
+            // 识别结果
+            recognition.onresult = function(event) {
+                let interimText = '';
+                let finalText = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalText += transcript;
+                        // 显示用户说了什么
+                        addMessage(transcript, 'user');
+                    } else {
+                        interimText += transcript;
+                    }
+                }
+
+                // 实时显示中间结果
+                if (interimText) {
+                    statusText.textContent = '🎤 ' + interimText;
+                }
             };
 
-            ws.onclose = () => {
-                setStatus('连接断开，重连中...', 'error');
-                recordBtn.disabled = true;
-                setTimeout(connectWS, 2000);
+            // 识别结束
+            recognition.onend = function() {
+                isListening = false;
+                recordBtn.classList.remove('recording');
+                recordBtn.querySelector('.icon').textContent = '🎤';
+                recordHint.innerHTML = '<span class="highlight">点击</span> 开始说话，再点停止';
+
+                // 如果还在处理中，不要重复触发
+                if (!isProcessing) {
+                    setStatus('就绪', 'active');
+                }
             };
 
-            ws.onerror = () => {
-                setStatus('连接错误', 'error');
+            // 识别错误
+            recognition.onerror = function(event) {
+                isListening = false;
+                recordBtn.classList.remove('recording');
+                recordBtn.querySelector('.icon').textContent = '🎤';
+                recordHint.innerHTML = '<span class="highlight">点击</span> 开始说话，再点停止';
+
+                switch (event.error) {
+                    case 'no-speech':
+                        setStatus('没听到声音，再试一次', 'error');
+                        break;
+                    case 'audio-capture':
+                        setStatus('❌ 无法访问麦克风', 'error');
+                        document.querySelector('.subtitle').textContent = '请允许麦克风权限';
+                        break;
+                    case 'not-allowed':
+                        setStatus('❌ 麦克风被拒绝', 'error');
+                        document.querySelector('.subtitle').textContent = '请在浏览器设置中允许麦克风';
+                        break;
+                    case 'network':
+                        setStatus('❌ 网络错误', 'error');
+                        break;
+                    default:
+                        setStatus('❌ 语音识别: ' + event.error, 'error');
+                }
             };
 
-            ws.onmessage = (event) => {
-                if (event.data instanceof Blob) {
-                    // 音频数据 - 播放
-                    playAudio(event.data);
-                } else {
-                    // JSON 消息
-                    const data = JSON.parse(event.data);
-                    handleWSMessage(data);
+            // 识别到结果后自动发送到服务器
+            recognition.onresult = function(event) {
+                let finalText = '';
+                let hasFinal = false;
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalText += transcript;
+                        hasFinal = true;
+                    } else {
+                        // 显示中间识别结果
+                        statusText.textContent = '🎤 ' + transcript;
+                    }
+                }
+
+                if (hasFinal && finalText.trim()) {
+                    // 显示用户说的话
+                    addMessage(finalText.trim(), 'user');
+                    // 停止识别
+                    stopListening();
+                    // 发送到服务器
+                    processText(finalText.trim());
                 }
             };
         }
 
-        function handleWSMessage(data) {
-            switch (data.type) {
-                case 'status':
-                    setStatus(data.message, 'thinking');
-                    break;
-
-                case 'asr_result':
-                    addMessage(data.text, 'user');
-                    break;
-
-                case 'llm_reply':
-                    addMessage(data.text, 'ai');
-                    break;
-
-                case 'error':
-                    setStatus('❌ ' + data.message, 'error');
-                    isProcessing = false;
-                    break;
-
-                case 'pong':
-                    break;
-            }
-        }
-
         // ============================================
-        // 录音功能
+        // 录音控制
         // ============================================
-        async function toggleRecord() {
+        function toggleRecord() {
             if (isProcessing) return;
 
-            if (!isRecording) {
-                await startRecording();
+            if (!isListening) {
+                startListening();
             } else {
-                stopRecording();
+                stopListening();
             }
         }
 
-        async function startRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        sampleRate: 16000,
-                        channelCount: 1,
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                    }
-                });
-
-                // 使用 MediaRecorder 录制 WAV
-                const options = {
-                    mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-                        ? 'audio/webm;codecs=opus'
-                        : 'audio/webm'
-                };
-
-                mediaRecorder = new MediaRecorder(stream, options);
-                audioChunks = [];
-
-                mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) {
-                        audioChunks.push(e.data);
-                    }
-                };
-
-                mediaRecorder.onstop = () => {
-                    // 停止所有音轨
-                    stream.getTracks().forEach(t => t.stop());
-
-                    // 发送音频
-                    const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
-                    sendAudio(blob);
-                };
-
-                mediaRecorder.start(100); // 每100ms收集一次数据
-                isRecording = true;
-                recordBtn.classList.add('recording');
-                setStatus('🎤 录音中...', 'thinking');
-                recordBtn.querySelector('.icon').textContent = '⏹️';
-
-            } catch (e) {
-                setStatus('❌ 无法访问麦克风: ' + e.message, 'error');
-                isRecording = false;
-            }
-        }
-
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            isRecording = false;
-            recordBtn.classList.remove('recording');
-            recordBtn.querySelector('.icon').textContent = '🎤';
-            setStatus('⏳ 处理中...', 'thinking');
-            isProcessing = true;
-            recordBtn.disabled = true;
-        }
-
-        async function sendAudio(blob) {
-            if (!ws || ws.readyState !== WebSocket.OPEN) {
-                setStatus('❌ 连接已断开', 'error');
-                isProcessing = false;
-                recordBtn.disabled = false;
+        function startListening() {
+            if (!recognition) {
+                setStatus('❌ 不支持语音识别', 'error');
                 return;
             }
 
-            // 发送 WAV 格式
-            // 浏览器录音是 webm/opus，需要在前端转码或后端处理
-            // 后端已经支持多种格式，直接发送原始 blob
-            ws.send(blob);
+            try {
+                // 重置识别器（防止重复启动）
+                try { recognition.abort(); } catch(e) {}
 
-            // 发送结束信号
-            ws.send(JSON.stringify({ cmd: 'stop_record' }));
-        }
+                isListening = true;
+                recordBtn.classList.add('recording');
+                recordBtn.querySelector('.icon').textContent = '🎤';
+                recordHint.innerHTML = '<span class="highlight">点击</span> 停止';
+                setStatus('🎤 请说话...', 'thinking');
 
-        // ============================================
-        // 文字输入
-        // ============================================
-        function toggleTextInput() {
-            useTextMode = !useTextMode;
-            const area = document.getElementById('textInputArea');
-            const toggle = document.getElementById('toggleText');
-
-            if (useTextMode) {
-                area.classList.add('show');
-                toggle.textContent = '🎤 改用语音输入';
-                document.querySelector('.record-area').style.display = 'none';
-            } else {
-                area.classList.remove('show');
-                toggle.textContent = '✏️ 改用文字输入';
-                document.querySelector('.record-area').style.display = 'flex';
+                recognition.start();
+            } catch (e) {
+                setStatus('❌ 启动失败: ' + e.message, 'error');
+                isListening = false;
+                recordBtn.classList.remove('recording');
+                recordBtn.querySelector('.icon').textContent = '🎤';
+                recordHint.innerHTML = '<span class="highlight">点击</span> 开始说话';
             }
         }
 
-        async function sendText() {
-            const input = document.getElementById('textInput');
-            const text = input.value.trim();
-            if (!text) return;
+        function stopListening() {
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
+            }
+            isListening = false;
+            recordBtn.classList.remove('recording');
+            recordBtn.querySelector('.icon').textContent = '🎤';
+            recordHint.innerHTML = '<span class="highlight">点击</span> 开始说话，再点停止';
+        }
 
-            input.value = '';
-            const btn = document.getElementById('sendBtn');
-            btn.disabled = true;
+        // ============================================
+        // 发送文字到服务器
+        // ============================================
+        async function processText(text) {
+            if (!text.trim()) return;
 
-            addMessage(text, 'user');
+            isProcessing = true;
+            recordBtn.disabled = true;
             setStatus('🤔 小管家思考中...', 'thinking');
 
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({text})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text.trim() })
                 });
                 const data = await res.json();
+
                 if (data.reply) {
                     addMessage(data.reply, 'ai');
-                    setStatus('🔊 已推送到音箱', 'active');
+                    if (data.pushed_to_speaker) {
+                        setStatus('🔊 小爱音箱播报中...', 'speaking');
+                    } else {
+                        setStatus('✅ 回复完成', 'active');
+                    }
                 } else {
                     setStatus('❌ ' + (data.error || '出错了'), 'error');
                 }
-            } catch(e) {
-                setStatus('❌ 网络错误', 'error');
+            } catch (e) {
+                setStatus('❌ 网络错误: ' + e.message, 'error');
             }
 
-            btn.disabled = false;
+            isProcessing = false;
+            recordBtn.disabled = false;
+        }
+
+        function sendText() {
+            const text = textInput.value.trim();
+            if (!text || sendBtn.disabled) return;
+
+            textInput.value = '';
+            sendBtn.disabled = true;
+            addMessage(text, 'user');
+            processText(text);
         }
 
         // ============================================
-        // UI 辅助
+        // 文字/语音切换
+        // ============================================
+        function toggleTextInput() {
+            useTextMode = !useTextMode;
+
+            if (useTextMode) {
+                textArea.classList.add('show');
+                toggleBtn.textContent = '🎤 改用语音输入';
+                document.querySelector('.record-area').style.display = 'none';
+                textInput.focus();
+            } else {
+                textArea.classList.remove('show');
+                toggleBtn.textContent = '✏️ 改用文字输入';
+                document.querySelector('.record-area').style.display = 'flex';
+            }
+        }
+
+        // ============================================
+        // UI 辅助函数
         // ============================================
         function addMessage(text, cls) {
             const div = document.createElement('div');
@@ -590,32 +615,12 @@
             div.appendChild(time);
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
-
-            isProcessing = false;
-            recordBtn.disabled = false;
         }
 
         function setStatus(text, type) {
             statusText.textContent = text;
             statusDot.className = 'dot';
             if (type) statusDot.classList.add(type);
-        }
-
-        function playAudio(blob) {
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            audio.onended = () => {
-                URL.revokeObjectURL(url);
-                setStatus('就绪', 'active');
-                isProcessing = false;
-                recordBtn.disabled = false;
-            };
-            audio.play().catch(e => {
-                setStatus('❌ 播放失败', 'error');
-                isProcessing = false;
-                recordBtn.disabled = false;
-            });
-            setStatus('🔊 正在播放...', 'thinking');
         }
 
         // ============================================

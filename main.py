@@ -141,10 +141,12 @@ async def chat_text(request: Request):
     chat_history.append({"role": "assistant", "content": reply})
 
     # 推送到音箱
+    pushed = False
     if config.get("dlna", {}).get("enabled", True) and dlna.connected:
         asyncio.create_task(dlna.play_text(reply))
+        pushed = True
 
-    return {"reply": reply}
+    return {"reply": reply, "pushed_to_speaker": pushed}
 
 # ============================================
 # WebSocket 实时语音
